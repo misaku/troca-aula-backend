@@ -13,3 +13,96 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Profiles {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  upsProfile UsersProfilesSchools[] @relation("upsProfile")
+
+  classProfile Classes[] @relation("classProfile")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String
+  password  String
+  createdAt DateTime @default(now())
+
+  upsUser  UsersProfilesSchools[] @relation("upsUser")
+  approver UsersProfilesSchools[] @relation("approver")
+
+  classCreator Classes[] @relation("classCreator")
+
+  classRegistrar Classes[] @relation("classRegistrar")
+
+  classApprover Classes[] @relation("classApprover")
+}
+
+model Subjects {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  classSubject Classes[] @relation("classSubject")
+}
+
+model School {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  upsSchool UsersProfilesSchools[] @relation("upsSchool")
+
+  classSchool Classes[] @relation("classSchool")
+}
+
+model UsersProfilesSchools {
+  school   School @relation("upsSchool", fields: [schoolId], references: [id])
+  schoolId Int
+
+  user   Users @relation("upsUser", fields: [userId], references: [id])
+  userId Int
+
+  profile   Profiles @relation("upsProfile", fields: [profileId], references: [id])
+  profileId Int
+
+  createdAt  DateTime  @default(now())
+  approvedAt DateTime?
+
+  approvedBy   Users? @relation("approver", fields: [approvedById], references: [id])
+  approvedById Int?
+
+  @@id([userId, profileId, schoolId])
+  @@index([schoolId])
+  @@index([userId])
+  @@index([profileId])
+}
+
+model Classes {
+  id Int @id @default(autoincrement())
+
+  school   School @relation("classSchool", fields: [schoolId], references: [id])
+  schoolId Int
+
+  subject   Subjects @relation("classSubject", fields: [subjectId], references: [id])
+  subjectId Int
+
+  createdBy     Users @relation("classCreator", fields: [createdByd], references: [id])
+  createdByd    Int
+  registredBy   Users @relation("classRegistrar", fields: [registredById], references: [id])
+  registredById Int
+  approvedBy    Users @relation("classApprover", fields: [approvedById], references: [id])
+  approvedById  Int
+
+  profile   Profiles @relation("classProfile", fields: [profileId], references: [id])
+  profileId Int
+
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+  statededAt DateTime?
+  approvedAt DateTime?
+}
