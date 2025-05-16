@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -25,12 +25,13 @@ model Profiles {
 }
 
 model Users {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   email     String
   phone     String
   password  String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   upsUser  UsersProfilesSchools[] @relation("upsUser")
   approver UsersProfilesSchools[] @relation("approver")
@@ -43,17 +44,19 @@ model Users {
 }
 
 model Subjects {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   classSubject Classes[] @relation("classSubject")
 }
 
-model School {
-  id        Int      @id @default(autoincrement())
+model Schools {
+  id        Int       @id @default(autoincrement())
   name      String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   upsSchool UsersProfilesSchools[] @relation("upsSchool")
 
@@ -61,7 +64,7 @@ model School {
 }
 
 model UsersProfilesSchools {
-  school   School @relation("upsSchool", fields: [schoolId], references: [id])
+  school   Schools @relation("upsSchool", fields: [schoolId], references: [id])
   schoolId Int
 
   user   Users @relation("upsUser", fields: [userId], references: [id])
@@ -85,24 +88,26 @@ model UsersProfilesSchools {
 model Classes {
   id Int @id @default(autoincrement())
 
-  school   School @relation("classSchool", fields: [schoolId], references: [id])
+  school   Schools @relation("classSchool", fields: [schoolId], references: [id])
   schoolId Int
 
   subject   Subjects @relation("classSubject", fields: [subjectId], references: [id])
   subjectId Int
 
-  createdBy     Users @relation("classCreator", fields: [createdByd], references: [id])
+  createdBy     Users  @relation("classCreator", fields: [createdByd], references: [id])
   createdByd    Int
-  registredBy   Users @relation("classRegistrar", fields: [registredById], references: [id])
-  registredById Int
-  approvedBy    Users @relation("classApprover", fields: [approvedById], references: [id])
-  approvedById  Int
+  registredBy   Users? @relation("classRegistrar", fields: [registredById], references: [id])
+  registredById Int?
+  approvedBy    Users? @relation("classApprover", fields: [approvedById], references: [id])
+  approvedById  Int?
 
-  profile   Profiles @relation("classProfile", fields: [profileId], references: [id])
-  profileId Int
+  profile   Profiles? @relation("classProfile", fields: [profileId], references: [id])
+  profileId Int?
 
   createdAt  DateTime  @default(now())
   finishedAt DateTime?
+  deletedAt  DateTime?
+
   statededAt DateTime?
   approvedAt DateTime?
 }

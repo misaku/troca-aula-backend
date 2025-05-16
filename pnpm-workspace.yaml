@@ -1,9 +1,9 @@
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
 onlyBuiltDependencies:
   - '@nestjs/core'
+  - '@prisma/client'
   - '@prisma/engines'
   - '@swc/core'
   - esbuild
   - prisma
-
-ignoredBuiltDependencies:
-  - '@scarf/scarf'
