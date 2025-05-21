@@ -9,6 +9,7 @@ import { SubjectsModule } from './modules/subjects/subjects.module';
 import { ClassesModule } from './modules/classes/classes.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { PrismaModule } from './prisma.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PrismaModule } from './prisma.module';
     }),
     PrismaModule,
     UsersModule,
+    AuthModule,
     SchoolsModule,
     SubjectsModule,
     ClassesModule,

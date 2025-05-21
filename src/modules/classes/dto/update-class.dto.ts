@@ -1,15 +1,15 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateClassDto } from './create-class.dto';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsOptional, IsNumber } from 'class-validator';
 
 export class UpdateClassDto extends PartialType(CreateClassDto) {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   registredById?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   approvedById?: number;
 }

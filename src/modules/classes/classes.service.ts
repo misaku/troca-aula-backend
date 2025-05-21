@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { ClassesRepository } from './classes.repository';
+import { GetClassDto } from './dto/get-class.dto';
 
 @Injectable()
 export class ClassesService {
@@ -10,8 +11,8 @@ export class ClassesService {
     return this.repository.create(createClassDto);
   }
 
-  findAll() {
-    return this.repository.findAll();
+  findAll(params: GetClassDto) {
+    return this.repository.findAll(params);
   }
 
   findOne(id: number) {

@@ -23,4 +23,10 @@ export class CreateClassDto {
   @IsNotEmpty()
   @Type(() => Date)
   statededAt: Date;
+
+  @ApiProperty()
+  @IsDate()
+  @IsNotEmpty()
+  @Type(() => Date)
+  finishedAt: Date;
 }

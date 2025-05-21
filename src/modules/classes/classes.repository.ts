@@ -3,13 +3,14 @@ import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { PrismaService } from '../../prisma.service';
 import { Prisma } from '@prisma/client';
+import { GetClassDto } from './dto/get-class.dto';
 
 @Injectable()
 export class ClassesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createProfileDto: CreateClassDto) {
-    const clas = await this.prisma.classes.create({
+    return await this.prisma.classes.create({
       data: {
         school: {
           connect: {
@@ -22,13 +23,28 @@ export class ClassesRepository {
           },
         },
         createdBy: { connect: { id: createProfileDto.createdByd } },
+        statededAt: createProfileDto.statededAt,
+        finishedAt: createProfileDto.finishedAt,
       } as any as Prisma.ClassesCreateInput,
     });
-    return clas;
   }
 
-  findAll() {
+  findAll(params: GetClassDto) {
+    let where = {};
+    if (params?.userId) {
+      where = {
+        where: {
+          OR: [
+            { registredById: null },
+            {
+              registredById: params.userId,
+            },
+          ],
+        },
+      };
+    }
     return this.prisma.classes.findMany({
+      ...where,
       include: {
         school: true,
         subject: true,
@@ -44,6 +60,9 @@ export class ClassesRepository {
         approvedBy: true,
         registredBy: true,
         profile: true,
+      },
+      orderBy: {
+        statededAt: 'desc',
       },
     });
   }

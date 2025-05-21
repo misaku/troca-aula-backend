@@ -27,7 +27,7 @@ model Profiles {
 model Users {
   id        Int       @id @default(autoincrement())
   name      String
-  email     String
+  email     String    @unique()
   phone     String
   password  String
   createdAt DateTime  @default(now())
@@ -41,6 +41,8 @@ model Users {
   classRegistrar Classes[] @relation("classRegistrar")
 
   classApprover Classes[] @relation("classApprover")
+
+  @@index([email])
 }
 
 model Subjects {

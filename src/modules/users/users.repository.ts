@@ -51,6 +51,12 @@ export class UsersRepository {
   findOne(id: number) {
     return this.prisma.users.findUnique({ where: { id } });
   }
+  findOneBy(email: string) {
+    return this.prisma.users.findUnique({
+      where: { email },
+      include: { upsUser: true },
+    });
+  }
 
   update(id: number, updateProfileDto: UpdateUserDto) {
     return this.prisma.subjects.update({

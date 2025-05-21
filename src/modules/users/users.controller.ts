@@ -2,14 +2,22 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const saltHounds = this.config.get<number>('saltRounds') as number;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+    const hash = await bcrypt.hash(createUserDto.password, saltHounds);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    return this.usersService.create({ ...createUserDto, password: hash });
   }
 
   @Get()
