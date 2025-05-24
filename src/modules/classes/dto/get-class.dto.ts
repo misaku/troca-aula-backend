@@ -8,4 +8,10 @@ export class GetClassDto {
   @IsOptional()
   @Type(() => Number)
   userId?: number;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  schoolId?: number;
 }

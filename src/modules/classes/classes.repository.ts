@@ -33,14 +33,24 @@ export class ClassesRepository {
     let where = {};
     if (params?.userId) {
       where = {
-        where: {
-          OR: [
-            { registredById: null },
-            {
-              registredById: params.userId,
-            },
-          ],
-        },
+        OR: [
+          { registredById: null },
+          {
+            registredById: params.userId,
+          },
+        ],
+      };
+    }
+    if (params?.schoolId) {
+      where = {
+        ...where,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        schoolId: params.schoolId,
+      };
+    }
+    if (Object.keys(where).length > 0) {
+      where = {
+        where,
       };
     }
     return this.prisma.classes.findMany({

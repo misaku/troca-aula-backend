@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(createUserDto: CreateUserDto) {
     const { schoolId, profileId, ...userPayload } = createUserDto;
     const user = await this.prisma.users.create({
@@ -49,8 +50,12 @@ export class UsersRepository {
   }
 
   findOne(id: number) {
-    return this.prisma.users.findUnique({ where: { id } });
+    return this.prisma.users.findUnique({
+      where: { id },
+      include: { upsUser: true },
+    });
   }
+
   findOneBy(email: string) {
     return this.prisma.users.findUnique({
       where: { email },
